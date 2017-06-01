@@ -1,0 +1,7 @@
+#INSTALL BREW
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+#INSTALL NMAP FOR SCANNER
+brew install nmap
+brew install wget
+brew install ispell

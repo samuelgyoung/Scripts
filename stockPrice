@@ -44,14 +44,61 @@ _get_stock() {
 	if [[ -n "${changed}" ]]; then
 		stock="$(echo '-c aapl,rubi' | sed -E 's/-{1,2}c //')"
 	fi
-	local url="http://download.finance.yahoo.com/d/quotes.csv?s=$stock&f=l1$changed"
+	#local url="http://download.finance.yahoo.com/d/quotes.csv?s=$stock&f=l1$changed"
+	
+	#symbol  	price	  p/e	    peg    Day_range      52-weekrang    Day_high       Day_low        
+	# 52-week_High   52-week_Low    EPS_Estimate_Current_Year       EPS_Estimate_Next_Year Price/Sales     
+	# EPS_Estimate_Next_Quarter       Market_Capitalization   Volume  Average_Daily_Volume    Previous_Close  Short_Ratio
+	local url="http://download.finance.yahoo.com/d/quotes.csv?s=$stock&f=sl1rr5mwhgkje7e8p5e9j1va2ps7"
+	
+	data=`curl -s "${url}"`
+	
+	price=`echo $data | sed 's/,/ /g' | awk '{print $2}'`
+	p_e=`echo $data | sed 's/,/ /g' | awk '{print $3}'`
+	peg=`echo $data | sed 's/,/ /g' | awk '{print $4}'`
+	Day_range=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $5}'`
+	weekrang=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $6}'`
+	DayHigh=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $7}'`
+	DayLow=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $8}'`
+	High52Week=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $9}'`
+	Low52Week=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $10}'`
+	EPS_Estimate_Current_Year=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $11}'`
+	EPS_Estimate_Next_Year=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $12}'`
+	PriceToSales=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $13}'`
+	EPSEstimateNextQuarter=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $14}'`
+	MarketCapitalization=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $15}'`
+	volume=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $16}'`
+	averageDailyVolume=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $17}'`
+	PreviousClose=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $18}'`
+	ShortRatio=`echo $data | sed 's/ //g' | sed 's/,/ /g' | awk '{print $19}'`
 	echo "{"
-	price=`curl -s "${url}"`
+	#price=`curl -s "${url}"`
+	
+	
+	
+	
 	theDate=`date +%Y%m%d%H%M%S`
-	echo -e "\t\"_id\" : \"$1-$theDate\","
-	echo -e "\t\"symbol\" : \"$1\","
-	echo -e "\t\"price\" : "$price","
-	echo -e "\t\"date\" : "$theDate
+	echo  "\"_id\" : \"$1-$theDate\","
+	echo  "\"symbol\" : \"$1\","
+	echo  "\"price\" : "$price","
+	echo  "\"p/e\" : "$p_e","
+	echo  "\"peg\" : "$peg","
+	echo  "\"dayRange\" : "$Day_range","
+	echo  "\"52WeekRange\" : "$weekrang","
+	echo  "\"dayHigh\" : "$DayHigh","
+	echo  "\"dayLow\" : "$DayLow","
+	echo  "\"52WeekHigh\" : "$High52Week","
+	echo  "\"52WeekLow\" : "$Low52Week","
+	echo  "\"EPSEstimateCurrentYear\" : "$EPS_Estimate_Current_Year","
+	echo  "\"EPSEstimateNextYear\" : "$EPS_Estimate_Next_Year","
+	echo  "\"priceToSales\" : "$PriceToSales","
+	echo  "\"EPSEstimateNextQuarter\" : "$EPSEstimateNextQuarter","
+	echo  "\"marketCapitalization\" : "\"$MarketCapitalization\"","
+	echo  "\"volume\" : "$volume","
+	echo  "\"averageDailyVolume\" : "$averageDailyVolume","
+	echo  "\"previousClose\" : "$PreviousClose","
+	echo  "\"shortRatio\" : "$ShortRatio","
+	echo  "\"date\" : "$theDate
 	echo "}"
 }
 

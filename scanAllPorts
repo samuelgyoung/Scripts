@@ -1,0 +1,8 @@
+#!/bin/zsh
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 <HOST ADDRESS or for range: 192.168.1-10>" >&2
+  exit 1
+fi
+
+nmap $1

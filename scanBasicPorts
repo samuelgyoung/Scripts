@@ -1,0 +1,8 @@
+#!/bin/zsh
+
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 <HOST ADDRESS>" >&2
+  exit 1
+fi
+
+nmap -F $1

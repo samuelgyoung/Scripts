@@ -16,7 +16,7 @@ if [ -z "$SYMBOLS" ]; then
 fi
 
 FIELDS=(symbol marketState regularMarketPrice regularMarketChange regularMarketChangePercent \
-  preMarketPrice preMarketChange preMarketChangePercent postMarketPrice postMarketChange postMarketChangePercent)
+  preMarketPrice preMarketChange preMarketChangePercent postMarketPrice postMarketChange postMarketChangePercent )
 API_ENDPOINT="https://query1.finance.yahoo.com/v7/finance/quote?lang=en-US&region=US&corsDomain=finance.yahoo.com"
 
 echo "$API_ENDPOINT&fields=$fields&symbols=$symbols"
@@ -49,6 +49,10 @@ for symbol in $(IFS=' '; echo "${SYMBOLS[*]}"); do
     price=$(query $symbol 'preMarketPrice')
     diff=$(query $symbol 'preMarketChange')
     percent=$(query $symbol 'preMarketChangePercent')
+
+    #3/12/21
+    averageDailyVolume3Month=$(query $symbol 'averageDailyVolume3Month')
+
   elif [ $(query $symbol 'marketState') != "REGULAR" ] \
     && [ "$(query $symbol 'postMarketChange')" != "0" ] \
     && [ "$(query $symbol 'postMarketChange')" != "null" ]; then
